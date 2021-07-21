@@ -10,6 +10,7 @@
   <packaging>pom</packaging>
     <modules>
         <module>cloud-payment8001</module>
+      <module>cloud-consumer-order80</module>
     </modules>
 
   <!--统一的版本号管理-->

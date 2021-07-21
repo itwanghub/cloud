@@ -5,10 +5,7 @@ import com.wang.entity.Payment;
 import com.wang.service.IPaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -25,10 +22,10 @@ public class PaymentController {
     private IPaymentService paymentService;
 
     @PostMapping(value = "/payment/create")
-    public CommenResult create(Payment payment){
+    public CommenResult create(@RequestBody Payment payment){
         int result = paymentService.create(payment);
         if (result>0){
-            log.info("插入成功:{}！",result);
+            log.info("插入成功:{}！，参数：{}",result,payment.getSerial());
             return new CommenResult(200,"插入成功",result);
         }else {
             log.info("插入失败！",result);
