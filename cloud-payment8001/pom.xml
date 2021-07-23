@@ -12,6 +12,12 @@
     <artifactId>payment8001</artifactId>
 
     <dependencies>
+        <!--Eureka客户端依赖-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.wang.cloud</groupId>
             <artifactId>cloud.api.commons</artifactId>
