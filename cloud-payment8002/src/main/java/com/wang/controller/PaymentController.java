@@ -5,10 +5,12 @@ import com.wang.entity.Payment;
 import com.wang.service.IPaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @Auther Wang zhe
@@ -24,6 +26,9 @@ public class PaymentController {
 
     @Value("${server.port}")
     private String serverPort;
+
+    @Resource
+    private DiscoveryClient discoveryClient;//可以获取当前服务的详细信息，需要在启动类上增加@EnableDiscoveryClient注解支持
 
     @PostMapping(value = "/payment/create")
     public CommonResult create(@RequestBody Payment payment){
@@ -46,5 +51,20 @@ public class PaymentController {
         }else {
             return new CommonResult(444,"没有找到ID:"+id);
         }
+    }
+
+    @GetMapping(value = "/payment/info")
+    public DiscoveryClient getServiceInfo(){
+        List<String> services = discoveryClient.getServices();
+        for(String service:services){
+            log.info("服务名："+service);
+        }
+
+        List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVER");
+        for(ServiceInstance instance:instances){
+            log.info("实例ID：{},实例IP：{}，实例端口：{}，实例地址：{}"
+                    ,instance.getInstanceId(),instance.getHost(),instance.getPort(),instance.getUri());
+        }
+        return this.discoveryClient;
     }
 }
