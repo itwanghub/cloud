@@ -21,7 +21,14 @@ import javax.annotation.Resource;
 @Slf4j
 public class OrderController {
 
-    public static final String PAYMENT_URL = "http://localhost:8001";
+    //public static final String PAYMENT_URL = "http://localhost:8001";
+    /**
+     * 调用服务提供者集群，不用单独写死地址，这个名字再每个单独服务的yml中进行配置，
+     * 配置好后有个问题，服务端集群有很多机器，具体调用那一台机器提供服务，就要用到负载均衡
+     * 因为用的是RestTemplate 调用，所以可以在配置类上增加@LoadBalanced注解，表示启用负载均衡。
+     * 否则消费端直接请求会报错，因为不知道服务端集群到底要用那台机器提供服务。
+     */
+    public static final String PAYMENT_URL = "http://CLOUD-PAYMENT-SERVER";
     @Resource
     private RestTemplate restTemplate;
 
@@ -33,6 +40,6 @@ public class OrderController {
 
     @GetMapping(value = "/consumer/payment/get/{id}")
     public CommonResult<Payment> getPayment(@PathVariable("id") Integer id){
-        return restTemplate.getForObject(PAYMENT_URL+"payment/get/"+id,CommonResult.class);
+        return restTemplate.getForObject(PAYMENT_URL+"/payment/get/"+id,CommonResult.class);
     }
 }
