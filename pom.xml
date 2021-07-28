@@ -16,6 +16,7 @@
         <module>cloud-eureka-server7002</module>
         <module>cloud-payment8002</module>
       <module>cloud-zookeeper-payment8004</module>
+        <module>cloud-zookeeper-consumer-order80</module>
     </modules>
 
   <!--统一的版本号管理-->
