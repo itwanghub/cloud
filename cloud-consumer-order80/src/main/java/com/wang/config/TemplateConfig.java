@@ -14,8 +14,9 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class TemplateConfig {
 
+    //@LoadBalanced
+    //自定义轮询算法的时候先把这个注掉
     @Bean
-    @LoadBalanced
     public RestTemplate getRestTemplate(){
         return new RestTemplate();
     }

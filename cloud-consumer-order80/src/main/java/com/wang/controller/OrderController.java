@@ -2,7 +2,10 @@ package com.wang.controller;
 
 import com.wang.entity.CommonResult;
 import com.wang.entity.Payment;
+import com.wang.lb.LoadBalancer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.net.URI;
+import java.util.List;
 
 /**
  * @Auther Wang zhe
@@ -32,6 +37,12 @@ public class OrderController {
     @Resource
     private RestTemplate restTemplate;
 
+    @Resource
+    private LoadBalancer loadBalancer;
+
+    @Resource
+    DiscoveryClient discoveryClient;
+
     @PostMapping(value = "/consumer/payment/create")
     public CommonResult<Payment> create(Payment payment){
         log.info("参数："+payment.getSerial());
@@ -41,5 +52,17 @@ public class OrderController {
     @GetMapping(value = "/consumer/payment/get/{id}")
     public CommonResult<Payment> getPayment(@PathVariable("id") Integer id){
         return restTemplate.getForObject(PAYMENT_URL+"/payment/get/"+id,CommonResult.class);
+    }
+
+    //自定义轮询算法
+    @GetMapping("/consumer/payment/getlb")
+    public String getLB(){
+        List<ServiceInstance> list = discoveryClient.getInstances("CLOUD-PAYMENT-SERVER");
+        if (list == null || list.size()<=0){
+            return null;
+        }
+        ServiceInstance instance = loadBalancer.instance(list);
+        URI uri = instance.getUri();
+        return restTemplate.getForObject(uri+"/payment/getlb",String.class);
     }
 }

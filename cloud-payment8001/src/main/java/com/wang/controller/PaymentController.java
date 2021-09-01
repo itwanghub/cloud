@@ -47,4 +47,9 @@ public class PaymentController {
             return new CommonResult(444,"没有找到ID:"+id);
         }
     }
+
+    @GetMapping("/payment/getlb")
+    public String getLB(){
+        return serverPort;
+    }
 }
