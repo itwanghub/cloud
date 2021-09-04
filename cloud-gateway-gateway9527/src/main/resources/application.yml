@@ -5,14 +5,19 @@ spring:
     name: cloud-gateway-service
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true   #开启从从注册中心动态创建路由的功能，利用微服务名进行路由，而不是直接将地址写死
       routes:
         - id: cloud-payment-server1         #路由id，没哟特定的规则，但是要唯一
-          uri: http://localhost:8001        #匹配成功后要提供服务的地址
+          #uri: http://localhost:8001        #匹配成功后要提供服务的地址
+          uri: lb://CLOUD-PAYMENT-SERVER        #匹配成功后要提供服务的地址
           predicates:
             - Path=/payment/get/**          #断言  如果请求路径相匹配的话进路由
 
         - id: cloud-payment-server2
-          uri: http://localhost:8001
+          #uri: http://localhost:8001
+          uri: lb://CLOUD-PAYMENT-SERVER
           predicates:
             - Path=/payment/getlb/**
 
